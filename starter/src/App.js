@@ -20,8 +20,9 @@ function App() {
   const [man, setMan] = useState(false)
   const [start, setStart] = useState(false)
   const [click, setClick] = useState("")
-  const [tag, setTag] = useState("")
-  const{list,setList}=useState(false)
+  const [tag, setTag] = useState("name")
+  const[data, setData] = useState([])
+ 
 
   const url = "https://randomuser.me/api/";
   const defaultImage = "https://randomuser.me/api/portraits/men/75.jpg";
@@ -30,21 +31,23 @@ function App() {
     try {
       const { data: { results } } = await axios(url)
       console.log(results[0])
+      setClick(results[0].name.first+" "+results[0].name.last)
                   const {
-                picture: {large},
-                name: {title, first, last},
-                email,
-                cell,gender,
-                location: {state, country},
+                    picture: { large },
+                    id:{value},
+                    name: {title, first, last},
+                    email,
+                    cell, gender,
+                    location: {state, country},
                     dob: { date, age },
-                login:{password}
+                    login:{password}
                   } = results[0]
             
               setInfo({
                 large,
                 title,
                 first, last,
-                email,cell,state,country,date,age,gender,password,
+                email,cell,state,country,date,age,gender,password,value,
               })
       
                 if (gender === "female") {
@@ -55,8 +58,8 @@ function App() {
                 }
               
       setStart(true);
-      setTag("name");
-      setClick(info?.first)
+      setTag("name")
+     
       
   
       
@@ -102,11 +105,28 @@ function App() {
     }
 
 }
-  
   const addUser = () => {
-    setList(true);
+    const user = {
+      name: info?.first,
+      email: info?.email,
+      phone: info?.cell,
+      age: info?.age,
+      id:info?.value,
+    }
+    console.log(user)
+    if ((data?.filter((item) => item.id !== user.id)).lenght) {
+      alert("you already added that user")
+    }
+    else {
+      setData([...data,user])
+    }
+
+
+
   }
- 
+  const clearAll = () => { 
+    setData([])
+  }
 
 
 
@@ -147,6 +167,9 @@ function App() {
             <button className="btn" type="button" onClick={addUser}>
               add user
             </button>
+            <button className="btn" type="button" onClick={clearAll}>
+              clear all
+            </button>
           </div>
 
           <table className="table">
@@ -159,15 +182,25 @@ function App() {
                  
               </tr>
             </thead>
-            <tbody>
-              {list && <tr className="body-tr">
-                <th>{info?.first}</th>
-                <th>{ info?.email}</th>
-                <th>{ info?.cell}</th>
-                <th>{info?.age}</th>
-              </tr>}
+            {data.length
+              ? data.map((item, index) => {
+                
+                const{name,email,phone,age,id}=item
+                  return(
+                <tbody>
+                <tr className="body-tr" key={index}>
+                    <th>{name}</th>
+                    <th>{ email}</th>
+                    <th>{phone}</th>
+                    <th>{age}</th>
+                  </tr>
+                  
+                 </tbody>)
+              })
               
-            </tbody>
+            : ""
+             }
+           
           </table>
         </div>
       </div>
