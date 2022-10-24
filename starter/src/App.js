@@ -34,7 +34,7 @@ function App() {
       setClick(results[0].name.first+" "+results[0].name.last)
                   const {
                     picture: { large },
-                    id:{value},
+                   id,
                     name: {title, first, last},
                     email,
                     cell, gender,
@@ -47,8 +47,9 @@ function App() {
                 large,
                 title,
                 first, last,
-                email,cell,state,country,date,age,gender,password,value,
+                email,cell,state,country,date,age,gender,password,id,
               })
+      
       
                 if (gender === "female") {
                 setMan(true)
@@ -74,8 +75,17 @@ function App() {
   
   useEffect(() => {
     getUser()
+    const memory= JSON.parse(localStorage.getItem("items"));
+    if (memory) {
+    setData(memory)
+    }
+
+
   },[])
 
+  useEffect(() => {
+    localStorage.setItem("items", JSON.stringify(data));
+  },[data])
  
   const getInfo = (e) => {
     console.log(e.target.alt)
@@ -111,21 +121,23 @@ function App() {
       email: info?.email,
       phone: info?.cell,
       age: info?.age,
-      id:info?.value,
+      id:info?.id.value,
     }
     console.log(user)
-    if ((data?.filter((item) => item.id !== user.id)).lenght) {
+    console.log(user.id)
+    if ((data?.filter((item) => item.id == user.id)).length) {
+
       alert("you already added that user")
     }
     else {
-      setData([...data,user])
+      setData([...data, user])
+      // localStorage.setItem("items", JSON.stringify([...data, user]));
     }
-
-
 
   }
   const clearAll = () => { 
     setData([])
+    // localStorage.setItem("items", JSON.stringify([]));
   }
 
 
@@ -187,8 +199,8 @@ function App() {
                 
                 const{name,email,phone,age,id}=item
                   return(
-                <tbody>
-                <tr className="body-tr" key={index}>
+                <tbody key={index}>
+                <tr className="body-tr" >
                     <th>{name}</th>
                     <th>{ email}</th>
                     <th>{phone}</th>
