@@ -20,7 +20,8 @@ function App() {
   const [man, setMan] = useState(false)
   const [start, setStart] = useState(false)
   const [click, setClick] = useState("")
-  const[tag,setTag]=useState("")
+  const [tag, setTag] = useState("")
+  const{list,setList}=useState(false)
 
   const url = "https://randomuser.me/api/";
   const defaultImage = "https://randomuser.me/api/portraits/men/75.jpg";
@@ -100,8 +101,11 @@ function App() {
       setTag("password")
     }
 
-
 }
+  
+  const addUser = () => {
+    setList(true);
+  }
  
 
 
@@ -140,7 +144,7 @@ function App() {
             <button className="btn" type="button" onClick={()=>getUser()}>
               new user
             </button>
-            <button className="btn" type="button" o>
+            <button className="btn" type="button" onClick={addUser}>
               add user
             </button>
           </div>
@@ -152,10 +156,17 @@ function App() {
                 <th className="th">Email</th>
                 <th className="th">Phone</th>
                 <th className="th">Age</th>
+                 
               </tr>
             </thead>
             <tbody>
-              <tr className="body-tr"></tr>
+              {list && <tr className="body-tr">
+                <th>{info?.first}</th>
+                <th>{ info?.email}</th>
+                <th>{ info?.cell}</th>
+                <th>{info?.age}</th>
+              </tr>}
+              
             </tbody>
           </table>
         </div>
